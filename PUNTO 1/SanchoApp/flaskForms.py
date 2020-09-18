@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
 from SanchoApp.databaseModel import User
 
@@ -29,3 +29,15 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+class RegisterProduct(FlaskForm):
+    
+    nombre = StringField('Nombre del producto', validators=[DataRequired()])
+    categoria = StringField('Categoria')
+    precio = DecimalField('Precio en COP', validators=[DataRequired()])
+    cantidad = IntegerField('Cantidad', validators=[DataRequired()], default=1)
+    bodega = StringField('Almacenado en Bodega')
+    estado_activo = BooleanField('Estado activo')
+
+    submit = SubmitField('Crear')

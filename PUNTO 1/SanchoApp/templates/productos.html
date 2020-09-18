@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="mb-3">Productos</h1>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active" href="{{url_for('productos')}}">Ver Productos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('registrar_productos')}}">Registrar</a>
+  </li>
+</ul>
+<div class="content-section border-top-0 pt-3">
+  {% for post in posts %}
+    <article class="media content-section ">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="#">{{ post.codigo }}</a>
+          <small class="text-muted">{{ post.categoria }}</small>
+        </div>
+        <h2><a class="article-title" href="#">{{ post.nombre }}</a></h2>
+      </div>
+    </article>
+  {% endfor %}
+</div>
+
+
+{% endblock content %}

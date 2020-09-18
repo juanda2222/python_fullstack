@@ -3,22 +3,34 @@ from flask import Flask, session, render_template, url_for, flash, redirect, req
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user, login_user, login_required, logout_user
 
-from SanchoApp.flaskForms import RegistrationForm, LoginForm
+from SanchoApp.flaskForms import RegistrationForm, LoginForm, RegisterProduct
 from SanchoApp import login_manager
 from SanchoApp.databaseModel import User
 posts = [
     {
-        'author': 'Corey Schafer',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 20, 2018'
+        'nombre': 'Perros el corral',
+        'codigo': 'f343rwekroq2oe',
+        'categoria': 'Comestibles',
+        'precio': '12000',
+        'cantidad': 12,
+        'bodega': "Bodega Cali"
     },
     {
-        'author': 'Jane Doe',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'April 21, 2018'
-    }
+        'nombre': 'hamburguesas don pedro',
+        'codigo': 'sdgndfg4t4tw',
+        'categoria': 'Comestibles',
+        'precio': '32000',
+        'cantidad': 5,
+        'bodega': "Bodega Cali"
+    },
+    {
+        'nombre': 'Tijeras',
+        'codigo': '34km3kefmwd',
+        'categoria': 'utencilios',
+        'precio': '4000',
+        'cantidad': 50,
+        'bodega': "Bodega Medellin"
+    },
 ]
 
 @login_manager.user_loader
@@ -28,29 +40,40 @@ def load_user(user_id):
 def config_routes(app):
 
     @app.route("/")
-    @app.route("/home")
+    @app.route("/productos")
     @login_required
-    def home():
-        """
-        print(current_user.is_authenticated)
-        print(current_user.__dict__)
+    def productos():
 
-        if current_user.is_authenticated:
-            return redirect(url_for('login'))
-        """
-        return render_template('home.html', posts=posts)
+        return render_template('productos.html', title='Productos', posts=posts)
 
-    @app.route("/about")
+    @app.route("/productos/registrar")
     @login_required
-    def about():
-        return render_template('about.html', title='About')
+    def registrar_productos():
+        
+        form = RegisterProduct()
+        if form.validate_on_submit():
+            
+            flash(f'New product created! {str(form)}!', 'success')
+
+        return render_template('registrar_productos.html', title='Productos', form=form)
+
+
+    @app.route("/clientes")
+    @login_required
+    def clientes():
+        return render_template('clientes.html', title='Clientes')
+
+    @app.route("/facturas")
+    @login_required
+    def facturas():
+        return render_template('facturas.html', title='Facturas')
 
     @app.route("/register", methods=['GET', 'POST'])
     def register():
 
-        # go to home if logged in
+        # go to productos if logged in
         if current_user.is_authenticated:
-            return redirect(url_for('home'))
+            return redirect(url_for('productos'))
 
 
         form = RegistrationForm()
@@ -65,7 +88,7 @@ def config_routes(app):
             login_user(new_user, remember=True) # authenticate to the login manager
             flash(f'Account created for {form.username.data}!', 'success')
     
-            return redirect(url_for('home'))
+            return redirect(url_for('productos'))
 
         return render_template('register.html', title='Register', form=form)
 
@@ -74,7 +97,7 @@ def config_routes(app):
 
         # redirect to home if the user is authenticated:
         if current_user.is_authenticated:
-            return redirect(url_for('home'))
+            return redirect(url_for('productos'))
         
         form = LoginForm()
         if form.validate_on_submit():
@@ -90,7 +113,7 @@ def config_routes(app):
             else:
                 flash('You have been logged in!', 'success')
                 login_user(user_database_record, remember=form.remember.data) # pass to the authenticator the user data
-                return redirect(url_for('home'))
+                return redirect(url_for('productos'))
 
         return render_template('login.html', title='Login', form=form)
 
