@@ -21,9 +21,8 @@ posts = [
     }
 ]
 
+@login_manager.user_loader
 def load_user(user_id):
-    print("user id:")
-    print(user_id)
     return User.query.get(int(user_id))
 
 def config_routes(app):
@@ -32,13 +31,13 @@ def config_routes(app):
     @app.route("/home")
     @login_required
     def home():
-        
+        """
         print(current_user.is_authenticated)
         print(current_user.__dict__)
 
         if current_user.is_authenticated:
             return redirect(url_for('login'))
-        
+        """
         return render_template('home.html', posts=posts)
 
     @app.route("/about")
@@ -48,6 +47,12 @@ def config_routes(app):
 
     @app.route("/register", methods=['GET', 'POST'])
     def register():
+
+        # go to home if logged in
+        if current_user.is_authenticated:
+            return redirect(url_for('home'))
+
+
         form = RegistrationForm()
         if form.validate_on_submit():
             new_user = User(
@@ -69,7 +74,7 @@ def config_routes(app):
 
         # redirect to home if the user is authenticated:
         if current_user.is_authenticated:
-            return redirect(url_for('/'))
+            return redirect(url_for('home'))
         
         form = LoginForm()
         if form.validate_on_submit():
@@ -89,12 +94,11 @@ def config_routes(app):
 
         return render_template('login.html', title='Login', form=form)
 
-    """
-    @login_manager.unauthorized_handler
+    
     @app.route("/logout", methods=['GET'])
     def logout():
         logout_user()
         flash('You have been logged out!', 'info')
         return redirect(url_for('login'))
 
-    """
+    
