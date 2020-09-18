@@ -1,0 +1,7 @@
+pylint-flask
+Flask-SQLAlchemy
+Flask
+flask-wtf
+wtforms
+email-validator
+flask-login
