@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
-from SanchoApp.databaseModel import User
+from SanchoApp.databaseModel import User, Producto
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
@@ -31,24 +31,25 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 #product wise forms:
-class RegisterProduct(FlaskForm):
+class RegisterProductForm(FlaskForm):
     
     nombre = StringField('Nombre del producto', validators=[DataRequired()])
     categoria = StringField('Categoria')
-    precio = DecimalField('Precio en COP', validators=[DataRequired()])
+    precio = StringField('Precio en COP', validators=[DataRequired()])
     cantidad = IntegerField('Cantidad', validators=[DataRequired()], default=1)
-    bodega = StringField('Almacenado en Bodega')
-    estado_activo = BooleanField('Estado activo')
+    bodega = StringField('Almacenado en Bodega', default="")
+    estado_activo = BooleanField('Estado activo', default=True)
 
     submit = SubmitField('Crear')
 
-class UpdateProduct(FlaskForm):
+class UpdateProductForm(FlaskForm):
     
     nombre = StringField('Nombre del producto', validators=[DataRequired()])
-    categoria = StringField('Categoria')
-    precio = DecimalField('Precio en COP', validators=[DataRequired()])
+    codigo = StringField('Codigo del producto', validators=[DataRequired()])
+    precio = StringField('Precio en COP', validators=[DataRequired()])
     cantidad = IntegerField('Cantidad', validators=[DataRequired()], default=1)
-    bodega = StringField('Almacenado en Bodega')
-    estado_activo = BooleanField('Estado activo')
+    categoria = StringField('Categoria', default="")
+    bodega = StringField('Almacenado en Bodega', default="")
+    estado_activo = BooleanField('Estado activo', default=True)
 
     submit = SubmitField('Modificar')

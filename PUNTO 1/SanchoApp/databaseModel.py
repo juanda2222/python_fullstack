@@ -12,9 +12,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=False,
                            default='default.jpg')
-    password = db.Column(db.String(60), nullable=False)
+    
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
@@ -65,12 +66,12 @@ class Factura(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     codigo = db.Column(db.String(100), nullable=False, unique=True)
     fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    valor_total = db.Column(db.Numeric, nullable=False)
+    valor_total = db.Column(db.String(10), nullable=False)
     metodo_pago = db.Column(db.String(100), nullable=False, default="efectivo")
 
     def __repr__(self):
         return f"Factura('{self.codigo}', fecha: '{self.fecha}') \
-            Productos: {self.productos}"
+            Productos: {self.relacion_productos}"
 
 
 class Producto(db.Model):
@@ -85,12 +86,12 @@ class Producto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     codigo = db.Column(db.String(100), nullable=False, unique=True)
-    categoria = db.Column(db.String(100), nullable=True)
-    precio = db.Column(db.Numeric, nullable=False)
+    precio = db.Column(db.String(10), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False, default=1)
+    categoria = db.Column(db.String(100), nullable=True)
     bodega = db.Column(db.String(100), nullable=True)
     estado_activo = db.Column(db.Boolean(), nullable=False, default=True)
 
     def __repr__(self):
-        return f"Produtos('{self.title}', '{self.date_posted}') \
-            compras: {self.facturas}"
+        return f"Produto('{self.nombre}', '{self.codigo}', '{self.precio}') \
+            Facturas: {self.relacion_facturas}"

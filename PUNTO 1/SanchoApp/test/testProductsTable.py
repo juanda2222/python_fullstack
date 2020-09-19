@@ -1,7 +1,7 @@
 from SanchoApp import create_app, db
 from SanchoApp.databaseModel import Producto
 
-if __name__ == "__main__":
+def insert_and_read_dumb_products():
 
     app = create_app()
 
@@ -25,7 +25,7 @@ if __name__ == "__main__":
                 'categoria': 'verano',
                 'precio': '32000',
                 'cantidad': 5,
-                'bodega': "Bodega Cali"
+                'bodega': "Bodega Cali",
                 "estado_activo": False
             },
             {
@@ -53,18 +53,18 @@ if __name__ == "__main__":
         ]
 
         for producto in lista_de_productos:            
-            nuevo_producto = Productos(
+            nuevo_producto = Producto(
                 nombre=producto["nombre"],
                 codigo=producto["codigo"],
-                categoria=producto["categoria"],
                 precio=producto["precio"],
-                cantidad=producto["cantidad"],
-                bodega=producto["bodega"],
-                estado_activo=producto["estado_activo"]
+                categoria=producto["categoria"] if "categoria" in producto else None,
+                cantidad=producto["cantidad"] if "cantidad" in producto else None,
+                bodega=producto["bodega"] if "bodega" in producto else None,
+                estado_activo=producto["estado_activo"] if "estado_activo" in producto else None
             )
             db.session.add(nuevo_producto)
 
         db.session.commit()
-        print(">>> admin user created! ")
-        print("Users table: ")
-        print(User.query.all())
+        print(">>> Dumb products inserted! ")
+        print("Products table: ")
+        print(Producto.query.all())
