@@ -30,7 +30,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
-
+#product wise forms:
 class RegisterProduct(FlaskForm):
     
     nombre = StringField('Nombre del producto', validators=[DataRequired()])
@@ -41,3 +41,14 @@ class RegisterProduct(FlaskForm):
     estado_activo = BooleanField('Estado activo')
 
     submit = SubmitField('Crear')
+
+class UpdateProduct(FlaskForm):
+    
+    nombre = StringField('Nombre del producto', validators=[DataRequired()])
+    categoria = StringField('Categoria')
+    precio = DecimalField('Precio en COP', validators=[DataRequired()])
+    cantidad = IntegerField('Cantidad', validators=[DataRequired()], default=1)
+    bodega = StringField('Almacenado en Bodega')
+    estado_activo = BooleanField('Estado activo')
+
+    submit = SubmitField('Modificar')

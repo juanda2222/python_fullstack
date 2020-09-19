@@ -5,28 +5,28 @@ from flask_login import current_user, login_user, login_required, logout_user
 
 from SanchoApp.flaskForms import RegistrationForm, LoginForm, RegisterProduct
 from SanchoApp import login_manager
-from SanchoApp.databaseModel import User
-posts = [
+from SanchoApp.databaseModel import User, Producto
+lista_de_productos = [
     {
-        'nombre': 'Perros el corral',
+        'nombre': 'Camisa el corral',
         'codigo': 'f343rwekroq2oe',
-        'categoria': 'Comestibles',
+        'categoria': 'verano',
         'precio': '12000',
         'cantidad': 12,
         'bodega': "Bodega Cali"
     },
     {
-        'nombre': 'hamburguesas don pedro',
+        'nombre': 'Pantalon don pedro',
         'codigo': 'sdgndfg4t4tw',
-        'categoria': 'Comestibles',
+        'categoria': 'verano',
         'precio': '32000',
         'cantidad': 5,
         'bodega': "Bodega Cali"
     },
     {
-        'nombre': 'Tijeras',
+        'nombre': 'Zapatos gava',
         'codigo': '34km3kefmwd',
-        'categoria': 'utencilios',
+        'categoria': 'invierno',
         'precio': '4000',
         'cantidad': 50,
         'bodega': "Bodega Medellin"
@@ -41,10 +41,24 @@ def config_routes(app):
 
     @app.route("/")
     @app.route("/productos")
+    @app.route("/productos/<string:codigo>")
     @login_required
-    def productos():
+    def productos(codigo=None):
+        
+        # check if is an incoming query for the product
+        if codigo is None:
+            return render_template('productos.html', title='Productos', lista_de_productos=lista_de_productos)
+        
+        # generate a table User structure for the db
+        else:
+            form = RegisterProduct()
+            if form.validate_on_submit():
+                pass
 
-        return render_template('productos.html', title='Productos', posts=posts)
+            # get the user info to initialize the form
+            user_database_record = User.query.filter_by(username=form.username.data).first()
+
+            return render_template('editar_producto.html', title='Editar Producto', posts=posts)
 
     @app.route("/productos/registrar")
     @login_required

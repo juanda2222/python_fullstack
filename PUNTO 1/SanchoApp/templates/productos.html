@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 {% block content %}
 
 <h1 class="mb-3">Productos</h1>
@@ -12,14 +14,14 @@
   </li>
 </ul>
 <div class="content-section border-top-0 pt-3">
-  {% for post in posts %}
+  {% for producto in lista_de_productos %}
     <article class="media content-section ">
       <div class="media-body">
         <div class="article-metadata">
-          <a class="mr-2" href="#">{{ post.codigo }}</a>
-          <small class="text-muted">{{ post.categoria }}</small>
+          <a class="mr-2" href="1232">{{ producto.codigo }}</a>
+          <small class="text-muted">{{ producto.categoria }}</small>
         </div>
-        <h2><a class="article-title" href="#">{{ post.nombre }}</a></h2>
+        <h2 class="article-title" href="#">{{ producto.nombre }}</h2>
       </div>
     </article>
   {% endfor %}
