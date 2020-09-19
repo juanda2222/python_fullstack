@@ -19,7 +19,7 @@
       <div class="form-group">
         {{ form.nombre.label(class="form-control-label") }}
         {% if form.nombre.errors %}
-        {{ form.nombre(class="form-control form-control-lg is-invalid",readonly="readonly", value="sdfsd") }}
+        {{ form.nombre(class="form-control form-control-lg is-invalid") }}
         <div class="invalid-feedback">
           {% for error in form.nombre.errors %}
           <span>{{ error }}</span>

@@ -50,14 +50,14 @@ def config_routes(app):
 
             # update the record if submitted:
             if form.validate_on_submit():
-                """
-                product_to_edit.nombre=form.nombre.data,
-                product_to_edit.codigo=form.codigo.data,
+                
+                admin = Producto.query.filter_by(id=id).update(dict(nombre=form.nombre.data))
+
                 db.session.commit()
                 print(product_to_edit)
 
                 flash(f'Product: {product_to_edit} updated!', 'success')
-                """
+            
                 return redirect(url_for('productos'))
             
             return render_template('editar_producto.html', title='Editar Producto', form=form)
