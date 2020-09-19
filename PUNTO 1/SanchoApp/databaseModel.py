@@ -32,7 +32,7 @@ class Cliente(db.Model):
     cedula = db.Column(db.String(100), nullable=False)
     nombre = db.Column(db.String(100), nullable=False)
     direccion = db.Column(db.String(100), nullable=True)
-    telefono = db.Column(db.String(20), nullable=True)
+    telefono = db.Column(db.Integer, nullable=True)
     fotografia = db.Column(db.String(256), nullable=True)
 
     def __repr__(self):
@@ -93,5 +93,5 @@ class Producto(db.Model):
     estado_activo = db.Column(db.Boolean(), nullable=False, default=True)
 
     def __repr__(self):
-        return f"Produto('{self.nombre}', '{self.codigo}', '{self.precio}') \
+        return f"Produto('{self.id}', '{self.nombre}', '{self.codigo}', '{self.precio}') \
             Facturas: {self.relacion_facturas}"

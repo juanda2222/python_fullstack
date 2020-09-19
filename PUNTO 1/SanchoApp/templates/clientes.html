@@ -1,5 +1,27 @@
-  
 {% extends "layout.html" %}
 {% block content %}
-    <h1 class="page-tittle">Clientes</h1>
+<h1 class="mb-3">Clientes</h1>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" href="{{url_for('clientes')}}">Mis clientes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{url_for('registrar_clientes')}}">Registrar</a>
+    </li>
+</ul>
+<div class="content-section border-top-0 pt-3">
+    {% for cliente in lista_de_clientes %}
+        <article class="media content-section ">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="clientes/{{cliente.id}}">{{ cliente.codigo }}</a>
+                    <small class="text-muted">{{ cliente.precio + " COP"}}</small>
+                </div>
+                <h2 class="article-title" href="#">{{ cliente.nombre }}</h2>
+            </div>
+        </article>
+    {% endfor %}
+</div>
+
 {% endblock content %}

@@ -22,9 +22,34 @@ def config_routes(app):
     @login_required
     def productos():
 
-        product_record = Producto.query.order_by(Producto.categoria).limit(10).all()
+        product_record = Producto.query.order_by(
+            Producto.categoria).limit(10).all()
         return render_template('productos.html', title='Productos', lista_de_productos=product_record)
 
+    @app.route("/productos/registrar", methods=['GET', 'POST'])
+    @login_required
+    def registrar_productos():
+
+        form = RegisterProductForm()
+        if form.validate_on_submit():
+            new_product = Producto(
+                nombre=form.nombre.data,
+                codigo=str(uuid4()),
+                precio=form.precio.data,
+                categoria=form.categoria.data,
+                cantidad=form.cantidad.data,
+                bodega=form.bodega.data,
+                estado_activo=form.estado_activo.data
+            )
+            db.session.add(new_product)
+            db.session.commit()
+            flash(f'New product created! {new_product}!', 'success')
+
+            return redirect(url_for('productos'))
+
+        else:
+
+            return render_template('productos_registrar.html', title='Productos', form=form)
 
     @app.route("/productos/<string:id>",  methods=['GET', 'POST'])
     @login_required
@@ -50,21 +75,29 @@ def config_routes(app):
 
             # update the record if submitted:
             if form.validate_on_submit():
-                
-                admin = Producto.query.filter_by(id=id).update(dict(nombre=form.nombre.data))
 
+                product_to_edit.nombre = form.nombre.data
+                product_to_edit.codigo = form.codigo.data
+                product_to_edit.categoria = form.categoria.data
+                product_to_edit.cantidad = form.cantidad.data
+                product_to_edit.bodega = form.bodega.data
+                product_to_edit.estado_activo = form.estado_activo.data
                 db.session.commit()
-                print(product_to_edit)
 
                 flash(f'Product: {product_to_edit} updated!', 'success')
-            
-                return redirect(url_for('productos'))
-            
-            return render_template('editar_producto.html', title='Editar Producto', form=form)
 
-    @app.route("/productos/registrar", methods=['GET', 'POST'])
+                return redirect(url_for('productos'))
+            else:
+                return render_template('productos_editar.html', title='Editar Producto', form=form)
+
+    @app.route("/clientes")
     @login_required
-    def registrar_productos():
+    def clientes():
+        return render_template('clientes.html', title='Clientes')
+
+    @app.route("/clientes/registrar", methods=['GET', 'POST'])
+    @login_required
+    def registrar_clientes():
 
         form = RegisterProductForm()
         if form.validate_on_submit():
@@ -85,12 +118,8 @@ def config_routes(app):
 
         else:
 
-            return render_template('registrar_productos.html', title='Productos', form=form)
+            return render_template('clientes_registrar.html', title='Clientes', form=form)
 
-    @app.route("/clientes")
-    @login_required
-    def clientes():
-        return render_template('clientes.html', title='Clientes')
 
     @app.route("/facturas")
     @login_required
@@ -145,8 +174,8 @@ def config_routes(app):
                 # pass to the authenticator the user data
                 login_user(user_database_record, remember=form.remember.data)
                 return redirect(url_for('productos'))
-
-        return render_template('login.html', title='Login', form=form)
+        else:
+            return render_template('login.html', title='Login', form=form)
 
     @app.route("/logout", methods=['GET'])
     def logout():

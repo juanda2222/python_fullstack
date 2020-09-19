@@ -15,15 +15,17 @@
 </ul>
 <div class="content-section border-top-0 pt-3">
   {% for producto in lista_de_productos %}
-    <article class="media content-section ">
-      <div class="media-body">
-        <div class="article-metadata">
-          <a class="mr-2" href="productos/{{producto.id}}">{{ producto.codigo }}</a>
-          <small class="text-muted">{{ producto.precio + " COP"}}</small>
+    {% if producto.estado_activo %}
+      <article class="media content-section ">
+        <div class="media-body">
+          <div class="article-metadata">
+            <a class="mr-2" href="productos/{{producto.id}}">{{ producto.codigo }}</a>
+            <small class="text-muted">{{ producto.precio + " COP"}}</small>
+          </div>
+          <h2 class="article-title" href="#">{{ producto.nombre }}</h2>
         </div>
-        <h2 class="article-title" href="#">{{ producto.nombre }}</h2>
-      </div>
-    </article>
+      </article>
+    {% endif %}
   {% endfor %}
 </div>
 

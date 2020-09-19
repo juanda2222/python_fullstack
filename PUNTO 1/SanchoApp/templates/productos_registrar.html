@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="mb-3">Productos</h1>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('productos')}}">Ver Productos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{{url_for('registrar_productos')}}">Registrar</a>
+  </li>
+</ul>
+<div class="content-section border-top-0 pt-3">
+  <form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Información del producto</legend>
+      <div class="form-group">
+        {{ form.nombre.label(class="form-control-label") }}
+        {% if form.nombre.errors %}
+        {{ form.nombre(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.nombre.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.nombre(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.precio.label(class="form-control-label") }}
+        {% if form.precio.errors %}
+        {{ form.precio(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.precio.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.precio(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.categoria.label(class="form-control-label") }}
+        {% if form.categoria.errors %}
+        {{ form.categoria(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.categoria.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.categoria(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.cantidad.label(class="form-control-label") }}
+        {% if form.cantidad.errors %}
+        {{ form.cantidad(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.cantidad.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.cantidad(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.bodega.label(class="form-control-label") }}
+        {% if form.bodega.errors %}
+        {{ form.bodega(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.bodega.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.bodega(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-check">
+        {{ form.estado_activo(class="form-check-input") }}
+        {{ form.estado_activo.label(class="form-check-label") }}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+
+
+{% endblock content %}
