@@ -1,7 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, DecimalField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
+    DecimalField, IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
-from SanchoApp.databaseModel import User, Producto, Cliente
+from flask_wtf.file import FileField, FileRequired
+from SanchoApp.databaseModel import User, Producto, Cliente, Factura
+
+from wtforms.fields.html5 import DateField
 
 """
     START Authentication wise forms:
@@ -78,14 +82,34 @@ class CreateClientForm(FlaskForm):
 
     nombre = StringField('Nombre del cliente', validators=[DataRequired()])
     cedula = StringField('Cedula', validators=[DataRequired()])
-    direccion = StringField('Dirección', validators=[DataRequired()])
-    telefono = IntegerField('Telefono', validators=[DataRequired()])
-    fotografia = db.Column(db.String(256), nullable=True)
+    direccion = StringField('Dirección')
+    telefono = StringField('Telefono')
+    fotografia = FileField("Subir foto", validators=[FileRequired()])
 
-    def validate_username(self, username):
-        user = Cliente.query.filter_by(cedula=cedula.data).first()
-        if user is not None:
+    submit = SubmitField('Crear usuario')
+
+    def validate_cedula(self, cedula):
+        client = Cliente.query.filter_by(cedula=cedula.data).first()
+        if client is not None:
             raise ValidationError('This client already exists.')
+
+
+class CreateFacturaForm(FlaskForm):
+
+    codigo = StringField('Codigo', validators=[DataRequired()])
+    fecha = DateField('Fecha de compra')
+    valor_total = DecimalField('Valor total', validators=[DataRequired()])
+    metodo_pago = StringField('Metodo de pago', default="efectivo")
+
+    facturas = SelectMultipleField(u'Productos', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+
+    submit = SubmitField('Crear Factura')
+
+    def validate_codigo(self, codigo):
+        factura = Factura.query.filter_by(codigo=codigo.data).first()
+        if factura is not None:
+            raise ValidationError('This code already exist.')
+
 
 
 """

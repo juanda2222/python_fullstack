@@ -15,10 +15,15 @@
         <article class="media content-section ">
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2" href="clientes/{{cliente.id}}">{{ cliente.codigo }}</a>
-                    <small class="text-muted">{{ cliente.precio + " COP"}}</small>
+                    <a class="mr-2" href="clientes/eliminar/{{cliente.id}}"> Eliminar cliente</a>
+                    <small class="text-muted">{{ cliente.id }}</small>
                 </div>
-                <h2 class="article-title" href="#">{{ cliente.nombre }}</h2>
+                <h2> 
+                    <a class="article-title" href="clientes/editar/{{cliente.id}}">
+                        {{ cliente.nombre }}
+                    </a>
+                </h2>
+                <h4 class="article-title" >{{ cliente.cedula }}</h2>
             </div>
         </article>
     {% endfor %}

@@ -32,12 +32,11 @@ class Cliente(db.Model):
     cedula = db.Column(db.String(100), nullable=False)
     nombre = db.Column(db.String(100), nullable=False)
     direccion = db.Column(db.String(100), nullable=True)
-    telefono = db.Column(db.Integer, nullable=True)
+    telefono = db.Column(db.String(12), nullable=True)
     fotografia = db.Column(db.String(256), nullable=True)
 
     def __repr__(self):
-        return f"Client('{self.nombre}', cedula: '{self.cedula}') \
-            Facturas: '{self.facturas}'"
+        return f"Client('{self.nombre}', cedula: '{self.cedula}')"
 
 
 # helper for the many to many relation between Facturas and Productos

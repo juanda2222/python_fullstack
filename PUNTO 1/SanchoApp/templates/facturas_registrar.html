@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="mb-3">registrar_facturas</h1>
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" href="{{url_for('facturas')}}">Ver Facturas</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="{{url_for('registrar_facturas')}}">Registrar</a>
+  </li>
+</ul>
+<div class="content-section border-top-0 pt-3">
+  <form method="POST" enctype="multipart/form-data" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Registrar del factura</legend>
+      <div class="form-group">
+        {{ form.codigo.label(class="form-control-label") }}
+        {% if form.codigo.errors %}
+        {{ form.codigo(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.codigo.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.codigo(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.fecha.label(class="form-control-label") }}
+        {% if form.fecha.errors %}
+        {{ form.fecha(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.fecha.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.fecha(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.valor_total.label(class="form-control-label") }}
+        {% if form.valor_total.errors %}
+        {{ form.valor_total(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.valor_total.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.valor_total(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.metodo_pago.label(class="form-control-label") }}
+        {% if form.metodo_pago.errors %}
+        {{ form.metodo_pago(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.metodo_pago.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.metodo_pago(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.facturas.label(class="form-control-label") }}
+        {% if form.facturas.errors %}
+        {{ form.facturas(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.facturas.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.facturas(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      
+      
+    </fieldset>
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+
+
+{% endblock content %}

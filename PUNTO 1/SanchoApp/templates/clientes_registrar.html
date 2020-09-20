@@ -5,14 +5,14 @@
 
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link" href="{{url_for('productos')}}">Ver Productos</a>
+    <a class="nav-link" href="{{url_for('clientes')}}">Ver Productos</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link active" href="{{url_for('registrar_productos')}}">Registrar</a>
+    <a class="nav-link active" href="{{url_for('registrar_clientes')}}">Registrar</a>
   </li>
 </ul>
 <div class="content-section border-top-0 pt-3">
-  <form method="POST" action="">
+  <form method="POST" enctype="multipart/form-data" action="">
     {{ form.hidden_tag() }}
     <fieldset class="form-group">
       <legend class="border-bottom mb-4">Información del producto</legend>
@@ -30,61 +30,66 @@
         {% endif %}
       </div>
       <div class="form-group">
-        {{ form.precio.label(class="form-control-label") }}
-        {% if form.precio.errors %}
-        {{ form.precio(class="form-control form-control-lg is-invalid") }}
+        {{ form.cedula.label(class="form-control-label") }}
+        {% if form.cedula.errors %}
+        {{ form.cedula(class="form-control form-control-lg is-invalid") }}
         <div class="invalid-feedback">
-          {% for error in form.precio.errors %}
+          {% for error in form.cedula.errors %}
           <span>{{ error }}</span>
           {% endfor %}
         </div>
         {% else %}
-        {{ form.precio(class="form-control form-control-lg") }}
+        {{ form.cedula(class="form-control form-control-lg") }}
         {% endif %}
       </div>
       <div class="form-group">
-        {{ form.categoria.label(class="form-control-label") }}
-        {% if form.categoria.errors %}
-        {{ form.categoria(class="form-control form-control-lg is-invalid") }}
+        {{ form.direccion.label(class="form-control-label") }}
+        {% if form.direccion.errors %}
+        {{ form.direccion(class="form-control form-control-lg is-invalid") }}
         <div class="invalid-feedback">
-          {% for error in form.categoria.errors %}
+          {% for error in form.direccion.errors %}
           <span>{{ error }}</span>
           {% endfor %}
         </div>
         {% else %}
-        {{ form.categoria(class="form-control form-control-lg") }}
+        {{ form.direccion(class="form-control form-control-lg") }}
         {% endif %}
       </div>
       <div class="form-group">
-        {{ form.cantidad.label(class="form-control-label") }}
-        {% if form.cantidad.errors %}
-        {{ form.cantidad(class="form-control form-control-lg is-invalid") }}
+        {{ form.telefono.label(class="form-control-label") }}
+        {% if form.telefono.errors %}
+        {{ form.telefono(class="form-control form-control-lg is-invalid") }}
         <div class="invalid-feedback">
-          {% for error in form.cantidad.errors %}
+          {% for error in form.telefono.errors %}
           <span>{{ error }}</span>
           {% endfor %}
         </div>
         {% else %}
-        {{ form.cantidad(class="form-control form-control-lg") }}
+        {{ form.telefono(class="form-control form-control-lg") }}
         {% endif %}
       </div>
-      <div class="form-group">
-        {{ form.bodega.label(class="form-control-label") }}
-        {% if form.bodega.errors %}
-        {{ form.bodega(class="form-control form-control-lg is-invalid") }}
-        <div class="invalid-feedback">
-          {% for error in form.bodega.errors %}
-          <span>{{ error }}</span>
-          {% endfor %}
+
+      <div class="form-group input-group mt-5">
+        <div class="input-group-prepend">
+          {{ form.hidden_tag() }}
+          {{ form.fotografia.label(class="form-control-label input-group-text") }}
         </div>
-        {% else %}
-        {{ form.bodega(class="form-control form-control-lg") }}
-        {% endif %}
+        <div class="custom-file">
+          {% if form.fotografia.errors %}
+            {{ form.fotografia(class="form-control form-control-lg custom-file-input is-invalid", id="inputGroupFile01") }}
+            <div class="invalid-feedback">
+              {% for error in form.fotografia.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.fotografia(class="form-control form-control-lg custom-file-input", id="inputGroupFile01") }}
+          {% endif %}
+          <label class="custom-file-label" for="inputGroupFile01" >Escoger archivo</label>
+        </div>
       </div>
-      <div class="form-check">
-        {{ form.estado_activo(class="form-check-input") }}
-        {{ form.estado_activo.label(class="form-check-label") }}
-      </div>
+      
+      
     </fieldset>
     <div class="form-group">
       {{ form.submit(class="btn btn-outline-info") }}
