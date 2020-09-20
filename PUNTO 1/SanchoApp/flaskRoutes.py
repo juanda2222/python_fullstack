@@ -8,7 +8,7 @@ from pathlib import Path
 from os import path, remove
 
 from SanchoApp.flaskForms import RegistrationForm, LoginForm, RegisterProductForm, \
-    UpdateProductForm, CreateClientForm, CreateFacturaForm
+    UpdateProductForm, CreateClientForm, CreateFacturaForm, UpdateClientForm, UpdateFacturaForm
 from SanchoApp import login_manager, db
 from SanchoApp.databaseModel import User, Producto, Cliente, Factura
 from sqlalchemy import asc, desc
@@ -147,7 +147,7 @@ def config_routes(app):
             return "404"
         else:
 
-            form = CreateClientForm(
+            form = UpdateClientForm(
                 nombre=client_to_edit.nombre,
                 cedula=client_to_edit.cedula,
                 direccion=client_to_edit.direccion,
@@ -202,28 +202,48 @@ def config_routes(app):
     @app.route("/facturas")
     @login_required
     def facturas():
-        return render_template('facturas.html', title='Facturas')
+
+        facturas_records = Factura.query.order_by(
+            Factura.valor_total).limit(10).all()
+
+        return render_template('facturas.html', title='Facturas', lista_de_facturas=facturas_records)
 
     @app.route("/facturas/registrar", methods=['GET', 'POST'])
     @login_required
     def registrar_facturas():
 
         form = CreateFacturaForm(codigo=str(uuid4()))
+        productos = Producto.query.order_by(Producto.precio).limit(100).all()
+
+        # generate a list of products to display
+        def map_id__name_id(producto):
+            return (str(producto.id), producto.nombre + "-" + producto.codigo)
+        id__name_map = map(map_id__name_id, productos)
+        form.productos.choices = list(id__name_map)
+
         if form.validate_on_submit():
 
-            print(form.facturas.data)
+            lista_productos = list()
+
+            # map the selected options to a list of products:
+            for id_producto in form.productos.data:
+                lista_productos.append(Producto.query.get(int(id_producto)))
+
             
-            # save client in the database
+            # save factura in the database
             new_factura = Factura(
+                cliente_id=Cliente.query.filter_by(
+                    cedula=form.cedula_cliente.data).first().id,
                 codigo=form.codigo.data,
                 fecha=form.fecha.data,
                 valor_total=str(form.valor_total.data),
-                metodo_pago=form.metodo_pago.data
+                metodo_pago=form.metodo_pago.data,
+                relacion_productos=lista_productos
 
             )
             db.session.add(new_factura)
             db.session.commit()
-            flash(f'New client created! {new_factura}!', 'success')
+            flash(f'New Order created! {new_factura}!', 'success')
 
             return redirect(url_for('facturas'))
 
@@ -236,42 +256,54 @@ def config_routes(app):
     def editar_facturas(id):
 
         # get the user info to initialize the form
-        client_to_edit = Cliente.query.get(id)
+        factura_to_edit = Factura.query.get(id)
 
-        if client_to_edit is None:
+        if factura_to_edit is None:
             return "404"
         else:
-
-            form = CreateClientForm(
-                nombre=client_to_edit.nombre,
-                cedula=client_to_edit.cedula,
-                direccion=client_to_edit.direccion,
-                telefono=client_to_edit.telefono
+                        
+            form = UpdateFacturaForm(
+                codigo=factura_to_edit.codigo,
+                fecha=factura_to_edit.fecha,
+                valor_total=float(factura_to_edit.valor_total),
+                cedula_cliente=Cliente.query.get(factura_to_edit.cliente_id).cedula,
+                metodo_pago=factura_to_edit.metodo_pago
             )
+
+            
+            # generate a list of products to display
+            productos = Producto.query.order_by(Producto.precio).limit(100).all()
+            def map_id__name_id(producto):
+                return (str(producto.id), producto.nombre + "-" + producto.codigo)
+            id__name_map = map(map_id__name_id, productos)
+            form.productos.choices = list(id__name_map)
+
+            # map to create the selected products:
+            def map_product_to_id(producto):
+                return str(producto.id)
+            id_map = map(map_product_to_id, factura_to_edit.relacion_productos)
+            print(list(id_map))
+            form.productos.default = list(id_map)
+            form.productos.selected = list(id_map)
+            
 
             if form.validate_on_submit():
 
-                # delete the old file:
-                remove(client_to_edit.fotografia)
+                lista_productos = list()
 
-                # save the new file
-                f = form.fotografia.data
-                filename_extension = path.splitext(
-                    secure_filename(f.filename))[1]
-                file_path = Path(
-                    'SanchoApp',
-                    'profileImages',
-                    form.nombre.data + "-" + form.cedula.data + filename_extension
-                ).absolute()
+                # map the selected options to a list of products:
+                for id_producto in form.productos.data:
+                    lista_productos.append(Producto.query.get(int(id_producto)))
 
                 # update the db data
-                client_to_edit.nombre = form.nombre.data
-                client_to_edit.cedula = form.cedula.data
-                client_to_edit.direccion = form.direccion.data
-                client_to_edit.telefono = form.telefono.data
-                client_to_edit.fotografia = str(file_path)
+                factura_to_edit.codigo = form.codigo.data
+                factura_to_edit.fecha = form.fecha.data
+                factura_to_edit.valor_total = str(form.valor_total.data)
+                factura_to_edit.metodo_pago = form.metodo_pago.data
+                factura_to_edit.cliente_id = Cliente.query.filter_by(cedula=form.cedula_cliente.data).first().id
+                factura_to_edit.relacion_productos = lista_productos
                 db.session.commit()
-                return redirect(url_for('clientes'))
+                return redirect(url_for('facturas'))
 
             else:
                 return render_template('facturas_registrar.html', title='Clientes', form=form)

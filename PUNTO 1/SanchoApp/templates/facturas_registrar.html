@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h1 class="mb-3">registrar_facturas</h1>
+<h1 class="mb-3">Registrar facturas</h1>
 
 <ul class="nav nav-tabs">
   <li class="nav-item">
@@ -15,7 +15,7 @@
   <form method="POST" enctype="multipart/form-data" action="">
     {{ form.hidden_tag() }}
     <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Registrar del factura</legend>
+      <legend class="border-bottom mb-4">Detalles de la factura</legend>
       <div class="form-group">
         {{ form.codigo.label(class="form-control-label") }}
         {% if form.codigo.errors %}
@@ -69,16 +69,29 @@
         {% endif %}
       </div>
       <div class="form-group">
-        {{ form.facturas.label(class="form-control-label") }}
-        {% if form.facturas.errors %}
-        {{ form.facturas(class="form-control form-control-lg is-invalid") }}
+        {{ form.cedula_cliente.label(class="form-control-label") }}
+        {% if form.cedula_cliente.errors %}
+        {{ form.cedula_cliente(class="form-control form-control-lg is-invalid") }}
         <div class="invalid-feedback">
-          {% for error in form.facturas.errors %}
+          {% for error in form.cedula_cliente.errors %}
           <span>{{ error }}</span>
           {% endfor %}
         </div>
         {% else %}
-        {{ form.facturas(class="form-control form-control-lg") }}
+        {{ form.cedula_cliente(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.productos.label(class="form-control-label") }}
+        {% if form.productos.errors %}
+        {{ form.productos(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.productos.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.productos(class="form-control form-control-lg") }}
         {% endif %}
       </div>
       

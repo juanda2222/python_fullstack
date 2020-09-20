@@ -45,7 +45,7 @@ relacion_productos_facturas = db.Table(
     db.metadata,
     db.Column('factura_id', db.Integer, db.ForeignKey('facturas.id'), primary_key=True),
     db.Column('producto_id', db.Integer, db.ForeignKey('productos.id'), primary_key=True),
-    db.Column("cantidad_producto", db.Integer, nullable=False, default=1)
+    db.Column("cantidad_producto", db.Integer, nullable=True, default=1)
 )
 
 
@@ -54,7 +54,7 @@ class Factura(db.Model):
     __tablename__="facturas"
 
     # many to one relation describer
-    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'))
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
     relacion_cliente = relationship("Cliente", back_populates="relacion_facturas")
 
     # many to many relationship
@@ -92,5 +92,4 @@ class Producto(db.Model):
     estado_activo = db.Column(db.Boolean(), nullable=False, default=True)
 
     def __repr__(self):
-        return f"Produto('{self.id}', '{self.nombre}', '{self.codigo}', '{self.precio}') \
-            Facturas: {self.relacion_facturas}"
+        return f"Produto('{self.id}', '{self.nombre}', '{self.codigo}', '{self.precio}')"

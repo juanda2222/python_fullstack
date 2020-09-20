@@ -93,23 +93,52 @@ class CreateClientForm(FlaskForm):
         if client is not None:
             raise ValidationError('This client already exists.')
 
+class UpdateClientForm(FlaskForm):
+
+    nombre = StringField('Nombre del cliente', validators=[DataRequired()])
+    cedula = StringField('Cedula', validators=[DataRequired()])
+    direccion = StringField('Dirección')
+    telefono = StringField('Telefono')
+    fotografia = FileField("Subir foto", validators=[FileRequired()])
+
+    submit = SubmitField('Actulizar usuario')
+
 
 class CreateFacturaForm(FlaskForm):
 
     codigo = StringField('Codigo', validators=[DataRequired()])
     fecha = DateField('Fecha de compra')
     valor_total = DecimalField('Valor total', validators=[DataRequired()])
+    cedula_cliente = StringField('Cedula de cliente', validators=[DataRequired()])
     metodo_pago = StringField('Metodo de pago', default="efectivo")
 
-    facturas = SelectMultipleField(u'Productos', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+    productos = SelectMultipleField('Productos', default=[])
 
     submit = SubmitField('Crear Factura')
+
+    def validate_cedula_cliente(self, cedula):
+        client = Cliente.query.filter_by(cedula=cedula.data).first()
+        if client is None:
+            raise ValidationError('This client does not Exist.')
 
     def validate_codigo(self, codigo):
         factura = Factura.query.filter_by(codigo=codigo.data).first()
         if factura is not None:
             raise ValidationError('This code already exist.')
 
+
+
+class UpdateFacturaForm(FlaskForm):
+
+    codigo = StringField('Codigo', validators=[DataRequired()])
+    fecha = DateField('Fecha de compra')
+    valor_total = DecimalField('Valor total', validators=[DataRequired()])
+    cedula_cliente = StringField('Cedula de cliente', validators=[DataRequired()])
+    metodo_pago = StringField('Metodo de pago', default="efectivo")
+
+    productos = SelectMultipleField('Productos', default=[])
+
+    submit = SubmitField('Actualizar factura')
 
 
 """
