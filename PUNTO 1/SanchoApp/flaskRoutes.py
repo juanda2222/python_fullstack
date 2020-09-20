@@ -6,6 +6,8 @@ from uuid import uuid4
 from werkzeug.utils import secure_filename
 from pathlib import Path
 from os import path, remove
+from flask import jsonify
+
 
 from SanchoApp.flaskForms import RegistrationForm, LoginForm, RegisterProductForm, \
     UpdateProductForm, CreateClientForm, CreateFacturaForm, UpdateClientForm, UpdateFacturaForm
@@ -308,6 +310,14 @@ def config_routes(app):
             else:
                 return render_template('facturas_registrar.html', title='Clientes', form=form)
 
+    @app.route("/facturas/api/<string:codigo>", methods=['GET'])
+    def facturas_api(codigo):
+        factura_record = Factura.query.filter_by(codigo=codigo).first().__dict__
+        factura_record.pop('_sa_instance_state', None)
+        print(factura_record)
+        return factura_record
+
+
     @app.route("/register", methods=['GET', 'POST'])
     def register():
 
@@ -364,3 +374,5 @@ def config_routes(app):
         logout_user()
         flash('You have been logged out!', 'info')
         return redirect(url_for('login'))
+
+    
