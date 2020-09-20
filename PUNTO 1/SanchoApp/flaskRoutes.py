@@ -41,7 +41,7 @@ def config_routes(app):
             new_product = Producto(
                 nombre=form.nombre.data,
                 codigo=str(uuid4()),
-                precio=form.precio.data,
+                precio=str(form.precio.data),
                 categoria=form.categoria.data,
                 cantidad=form.cantidad.data,
                 bodega=form.bodega.data,
@@ -72,7 +72,7 @@ def config_routes(app):
             form = UpdateProductForm(
                 nombre=product_to_edit.nombre,
                 codigo=product_to_edit.codigo,
-                precio=product_to_edit.precio,
+                precio=float(product_to_edit.precio),
                 categoria=product_to_edit.categoria,
                 cantidad=product_to_edit.cantidad,
                 bodega=product_to_edit.bodega,
@@ -305,6 +305,9 @@ def config_routes(app):
                 factura_to_edit.cliente_id = Cliente.query.filter_by(cedula=form.cedula_cliente.data).first().id
                 factura_to_edit.relacion_productos = lista_productos
                 db.session.commit()
+
+                flash(f'Order: {factura_to_edit} modified!', 'success')
+
                 return redirect(url_for('facturas'))
 
             else:

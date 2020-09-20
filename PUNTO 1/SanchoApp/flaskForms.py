@@ -57,7 +57,7 @@ class RegisterProductForm(FlaskForm):
 
     nombre = StringField('Nombre del producto', validators=[DataRequired()])
     categoria = StringField('Categoria')
-    precio = StringField('Precio en COP', validators=[DataRequired()])
+    precio = DecimalField('Precio en COP', validators=[DataRequired()])
     cantidad = IntegerField('Cantidad', validators=[DataRequired()], default=1)
     bodega = StringField('Almacenado en Bodega', default="")
     estado_activo = BooleanField('Estado activo', default=True)
@@ -69,7 +69,7 @@ class UpdateProductForm(FlaskForm):
 
     nombre = StringField('Nombre del producto', validators=[DataRequired()])
     codigo = StringField('Codigo del producto', validators=[DataRequired()])
-    precio = StringField('Precio en COP', validators=[DataRequired()])
+    precio = DecimalField('Precio en COP', validators=[DataRequired()])
     cantidad = IntegerField('Cantidad', default=1)
     categoria = StringField('Categoria', default="")
     bodega = StringField('Almacenado en Bodega', default="")
@@ -115,6 +115,7 @@ class CreateFacturaForm(FlaskForm):
     productos = SelectMultipleField('Productos', default=[])
 
     submit = SubmitField('Crear Factura')
+
 
     def validate_cedula_cliente(self, cedula):
         client = Cliente.query.filter_by(cedula=cedula.data).first()
