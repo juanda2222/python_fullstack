@@ -8,8 +8,13 @@ db = SQLAlchemy()
 # init the login_manager to use it later
 login_manager = LoginManager()
 
-from SanchoApp import databaseModel
-from SanchoApp.flaskRoutes import config_routes
+from SanchoApp import DatabaseModel
+from SanchoApp.Auth import configure_auth
+from SanchoApp.Clients import configure_clients
+from SanchoApp.Facturas import configure_facturas
+from SanchoApp.Products import configure_products
+
+
 
 def create_app():
 
@@ -24,8 +29,11 @@ def create_app():
     login_manager.login_message = u"Log in to view this content."
     login_manager.login_message_category = "info"
 
-    # config custom routes
-    config_routes(app) 
+    # custom configuration
+    configure_auth(app)
+    configure_clients(app)
+    configure_facturas(app)
+    configure_products(app)
 
     """
     # blueprint for auth routes in our app

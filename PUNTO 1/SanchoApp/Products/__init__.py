@@ -1,0 +1,2 @@
+
+from SanchoApp.Products.controller import configure_products

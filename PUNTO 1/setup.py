@@ -1,6 +1,6 @@
 
 from SanchoApp import create_app, db
-from SanchoApp.databaseModel import User
+from SanchoApp.DatabaseModel import User
 
 DEV_ADMIN_EMAIL = "admin@sancho.com"
 DEV_USERNAME = "admin"

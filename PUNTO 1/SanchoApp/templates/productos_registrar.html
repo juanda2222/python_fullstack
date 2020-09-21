@@ -1,16 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h1 class="mb-3">Productos</h1>
+<h1 class="mb-3">{{title}}</h1>
 
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link" href="{{url_for('productos')}}">Ver Productos</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link active" href="{{url_for('registrar_productos')}}">Registrar</a>
-  </li>
-</ul>
 <div class="content-section border-top-0 pt-3">
   <form method="POST" action="">
     {{ form.hidden_tag() }}
@@ -27,6 +19,19 @@
         </div>
         {% else %}
         {{ form.nombre(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.codigo.label(class="form-control-label") }}
+        {% if form.codigo.errors %}
+        {{ form.codigo(class="form-control form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in form.codigo.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %}
+        {{ form.codigo(class="form-control form-control-lg") }}
         {% endif %}
       </div>
       <div class="form-group">

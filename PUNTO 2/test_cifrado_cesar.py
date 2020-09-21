@@ -2,7 +2,7 @@
 
 from unittest import TestCase, main
 from functools import partial
-from cifrado_cesar import cifrar_string, StringInputError
+from cifrado_cesar import cifrar_string, InputError
 
 class TestEncription(TestCase):
     def test_basic_example(self):
@@ -42,8 +42,13 @@ class TestEncription(TestCase):
         print("Testing space case")
         input_value = "string with space"
         self.assertRaises(
-            StringInputError, 
+            InputError, 
             partial(cifrar_string, input_value, 12)
+        )
+        print("Testing bad args")
+        self.assertRaises(
+            InputError, 
+            partial(cifrar_string, 12, "wrong type")
         )
 
 

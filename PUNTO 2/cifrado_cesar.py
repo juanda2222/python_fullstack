@@ -3,21 +3,10 @@
 
 ALFABETO_ESPAÑOL = "abcdefghijklmnñopqrstuvwxyz"
 
-class StringInputError(Exception):
-    """Something wrong with the input string"""
+class InputError(Exception):
+    """Something wrong with the input"""
     pass
 
-# create a function generator for maping and reusability
-def __desplazar_function_generator(desplazamiento:int = 0) -> str:
-
-    def desplazar(char:str) -> str:
-
-        # check edge cases
-        if char and len(char) is 1:
-            index_absoluto = (ALFABETO_ESPAÑOL.index(char) + desplazamiento) % len(ALFABETO_ESPAÑOL)
-            return ALFABETO_ESPAÑOL[index_absoluto]
-
-    return desplazar
 
 def cifrar_string(mensaje:str, desplazamiento:int) -> str:
 
@@ -29,11 +18,20 @@ def cifrar_string(mensaje:str, desplazamiento:int) -> str:
         
     """
     # check edge cases
-    if mensaje and desplazamiento:
-        if " " in mensaje:
-            raise StringInputError("Wrong input character: ' '")
-        
-        # normalize and use the map function to encrypt
-        mensaje = mensaje.lower()
-        return "".join(list(map(__desplazar_function_generator(desplazamiento), mensaje)))
+    if type(mensaje) is not str:
+        raise InputError("Wrong input 'mensaje', expected str not ", type(mensaje))
+    elif type(desplazamiento) is not int:
+        raise InputError("Wrong input 'desplazamiento', expected int not ", type(mensaje))
+    elif " " in mensaje:
+        raise InputError("Wrong input character: ' '")
+
+    mensaje = mensaje.lower()
+
+    # create a mapper function to generate the ne characters
+    mapper_function = lambda char: ALFABETO_ESPAÑOL[
+        (ALFABETO_ESPAÑOL.index(char) + desplazamiento) % len(ALFABETO_ESPAÑOL)
+    ]
+
+    # normalize and use the map function to encrypt
+    return "".join(list(map(mapper_function, mensaje)))
         
