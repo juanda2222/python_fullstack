@@ -5,7 +5,9 @@
 To install the applicattion localy under the "PUNTO 1" folder:
 
 > python -version = 3.7
-> pip install requirements.txt
+> cd SanchoApp
+> pip install -r requirements.txt
+> cd ..
 > python setup.py
 
 To test the aplication:
