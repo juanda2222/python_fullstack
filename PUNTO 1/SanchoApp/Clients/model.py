@@ -21,5 +21,5 @@ class Cliente(db.Model):
     fotografia = db.Column(db.String(256), nullable=True)
 
     def __repr__(self):
-        return f"Client('{self.nombre}', cedula: '{self.cedula}')"
+        return f"Client('{self.nombre}', cedula: '{self.cedula}' fotografia_url: {self.fotografia} )"
         

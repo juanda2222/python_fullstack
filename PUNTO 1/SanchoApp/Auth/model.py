@@ -6,7 +6,7 @@ from datetime import datetime
 from flask_login import UserMixin  # used to manage the login state inside the db
 from sqlalchemy.orm import relationship
 from SanchoApp import db
-
+from SanchoApp.Clients.controller import DEFAULT_USER_PICTURE_STATIC_PATH
 
 
 class User(UserMixin, db.Model):
@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     image_file = db.Column(db.String(20), nullable=False,
-                           default='default.jpg')
+                           default=DEFAULT_USER_PICTURE_STATIC_PATH)
     
 
     def __repr__(self):

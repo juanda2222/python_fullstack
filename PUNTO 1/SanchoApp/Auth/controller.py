@@ -40,7 +40,7 @@ def configure_auth(app):
 
 
             # validate the user:
-            if (form.username.data == 'admin' and form.password.data == 'password') or user_database_record is not None:
+            if user_database_record is not None:
                 flash('You have been logged in!', 'success')
                 # pass to the authenticator the user data
                 login_user(user_database_record, remember=form.remember.data)

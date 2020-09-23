@@ -15,7 +15,7 @@ from SanchoApp.Clients.model import Cliente
 from sqlalchemy import asc, desc
 
 
-DEFAULT_USER_PICTURE_STATIC_PATH = "profileImages/usuario.png"
+DEFAULT_USER_PICTURE_STATIC_PATH = "profileImages/default.png"
 
 
 def configure_clients(app):
@@ -89,7 +89,7 @@ def configure_clients(app):
                     # delete the old picture
                     local_file_path = Path(
                         'SanchoApp', 
-                        client_to_edit.fotografia[1:] # remove the trailing /
+                        client_to_edit.fotografia
                         ).absolute()
                     remove(local_file_path)
 
@@ -127,10 +127,10 @@ def configure_clients(app):
             
             # delete the picture file if the user used a diferent image
             default_user_image_url = url_for('static', filename=DEFAULT_USER_PICTURE_STATIC_PATH )
-            if client_to_delete.fotografia != default_user_image_url:
+            if not (client_to_delete.fotografia == default_user_image_url or client_to_delete.fotografia == None):
                 local_file_path = Path(
                     'SanchoApp', 
-                    client_to_delete.fotografia[1:] # remove the trailing /
+                    client_to_delete.fotografia
                     ).absolute()
                 remove(local_file_path)
 
