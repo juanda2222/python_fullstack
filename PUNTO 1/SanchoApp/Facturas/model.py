@@ -1,45 +1,40 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
-    DecimalField, IntegerField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
-from flask_wtf.file import FileField, FileRequired
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
 
-from wtforms.fields.html5 import DateField
-
-class CreateFacturaForm(FlaskForm):
-
-    codigo = StringField('Codigo', validators=[DataRequired()])
-    fecha = DateField('Fecha de compra')
-    valor_total = DecimalField('Valor total', validators=[DataRequired()])
-    cedula_cliente = StringField('Cedula de cliente', validators=[DataRequired()])
-    metodo_pago = StringField('Metodo de pago', default="efectivo")
-
-    productos = SelectMultipleField('Productos', default=[])
-
-    submit = SubmitField('Crear Factura')
+from datetime import datetime
+from flask_login import UserMixin  # used to manage the login state inside the db
+from sqlalchemy.orm import relationship
+from SanchoApp import db
 
 
-    def validate_cedula_cliente(self, cedula):
-        client = Cliente.query.filter_by(cedula=cedula.data).first()
-        if client is None:
-            raise ValidationError('This client does not Exist.')
-
-    def validate_codigo(self, codigo):
-        factura = Factura.query.filter_by(codigo=codigo.data).first()
-        if factura is not None:
-            raise ValidationError('This code already exist.')
-
+# helper for the many to many relation between Facturas and Productos
+relacion_productos_facturas = db.Table(
+    'relacion_productos_facturas', 
+    db.metadata,
+    db.Column('factura_id', db.Integer, db.ForeignKey('facturas.id'), primary_key=True),
+    db.Column('producto_id', db.Integer, db.ForeignKey('productos.id'), primary_key=True),
+    db.Column("cantidad_producto", db.Integer, nullable=True, default=1)
+)
 
 
-class UpdateFacturaForm(FlaskForm):
+class Factura(db.Model):
 
-    codigo = StringField('Codigo', validators=[DataRequired()])
-    fecha = DateField('Fecha de compra')
-    valor_total = DecimalField('Valor total', validators=[DataRequired()])
-    cedula_cliente = StringField('Cedula de cliente', validators=[DataRequired()])
-    metodo_pago = StringField('Metodo de pago', default="efectivo")
+    __tablename__="facturas"
 
-    productos = SelectMultipleField('Productos', default=[])
+    # many to one relation describer
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    relacion_cliente = relationship("Cliente", back_populates="relacion_facturas")
 
-    submit = SubmitField('Actualizar factura')
+    # many to many relationship
+    relacion_productos = relationship("Producto",
+                             secondary=relacion_productos_facturas,
+                             back_populates="relacion_facturas")
+
+    id = db.Column(db.Integer, primary_key=True)
+    codigo = db.Column(db.String(100), nullable=False, unique=True)
+    fecha = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    valor_total = db.Column(db.String(10), nullable=False)
+    metodo_pago = db.Column(db.String(100), nullable=False, default="efectivo")
+
+    def __repr__(self):
+        return f"Factura('{self.codigo}', fecha: '{self.fecha}') \
+            Productos: {self.relacion_productos}"
+

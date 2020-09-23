@@ -1,4 +1,4 @@
-  
+
 from flask import Flask, session, render_template, url_for, flash, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user, login_user, login_required, logout_user
@@ -9,17 +9,18 @@ from os import path, remove
 from flask import jsonify
 
 
-from SanchoApp.Auth.model import RegistrationForm, LoginForm
+from SanchoApp.Auth.view import RegistrationForm, LoginForm
 from SanchoApp import login_manager, db
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
+from SanchoApp.Auth.model import User
 from sqlalchemy import asc, desc
+
 
 def configure_auth(app):
 
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-    
+
     @app.route("/login", methods=['GET', 'POST'])
     def login():
 
@@ -30,22 +31,27 @@ def configure_auth(app):
         form = LoginForm()
         if form.validate_on_submit():
 
-            # generate a table User structure for the db
+            # check if the user exist in the db
             user_database_record = User.query.filter_by(
-                username=form.username.data).first()
+                username=form.username.data
+            ).filter_by(
+                password=form.password.data
+            ).first()
+
 
             # validate the user:
-            if not (form.username.data == 'admin' and form.password.data == 'password') or user_database_record is None:
-                flash('Login Unsuccessful. Please check username and password', 'danger')
-                return redirect(url_for('login'))
-
-            else:
+            if (form.username.data == 'admin' and form.password.data == 'password') or user_database_record is not None:
                 flash('You have been logged in!', 'success')
                 # pass to the authenticator the user data
                 login_user(user_database_record, remember=form.remember.data)
                 return redirect(url_for('productos'))
+
+            else:
+                flash('Login Unsuccessful. Please check username and password', 'danger')
+                return redirect(url_for('login'))
+
         else:
-            return render_template('login.html', title='Login', form=form)
+            return render_template('Auth/login.html', title='Login', form=form)
 
     @app.route("/logout", methods=['GET'])
     def logout():
@@ -75,4 +81,4 @@ def configure_auth(app):
 
             return redirect(url_for('productos'))
 
-        return render_template('register.html', title='Register', form=form)
+        return render_template('Auth/register.html', title='Register', form=form)

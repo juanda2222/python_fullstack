@@ -1,5 +1,5 @@
   
-from flask import Flask, session, render_template, url_for, flash, redirect, request
+from flask import Flask, session, render_template, url_for, flash, redirect, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user, login_user, login_required, logout_user
 from uuid import uuid4
@@ -9,10 +9,14 @@ from os import path, remove
 from flask import jsonify
 
 
-from SanchoApp.Clients.model import CreateClientForm, UpdateClientForm 
+from SanchoApp.Clients.view import CreateClientForm, UpdateClientForm 
 from SanchoApp import login_manager, db
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
+from SanchoApp.Clients.model import Cliente
 from sqlalchemy import asc, desc
+
+
+DEFAULT_USER_PICTURE_STATIC_PATH = "profileImages/usuario.png"
+
 
 def configure_clients(app):
 
@@ -21,7 +25,7 @@ def configure_clients(app):
     def clientes():
 
         client_record = Cliente.query.order_by(Cliente.cedula).limit(10).all()
-        return render_template('clientes.html', title='Clientes', lista_de_clientes=client_record)
+        return render_template('Clients/clientes.html', title='Clientes', lista_de_clientes=client_record)
 
     @app.route("/clientes/registrar", methods=['GET', 'POST'])
     @login_required
@@ -30,16 +34,16 @@ def configure_clients(app):
         form = CreateClientForm()
         if form.validate_on_submit():
 
-            # save the file in storage manager (mucked by the file system)
-            f = form.fotografia.data
-            filename_extension = path.splitext(secure_filename(f.filename))[1]
-            file_path = Path(
-                'SanchoApp',
-                "static",
-                'profileImages',
-                form.nombre.data + "-" + form.cedula.data + filename_extension
-            ).absolute()
-            f.save(file_path)
+            # save the file in storage manager (mucked by the file system and served as a static file)
+            public_file_url = url_for('static', filename=DEFAULT_USER_PICTURE_STATIC_PATH )
+            if form.fotografia.data is not None:
+                f = form.fotografia.data
+                filename_extension = path.splitext(secure_filename(f.filename))[1]
+                file_static_path = 'profileImages/'+form.nombre.data + "-" + form.cedula.data + filename_extension
+                local_file_path = Path('SanchoApp', "static", file_static_path)
+                f.save(local_file_path)
+                public_file_url = url_for("static", filename=file_static_path)
+            print(public_file_url)
 
             # save client in the database
             new_client = Cliente(
@@ -47,7 +51,7 @@ def configure_clients(app):
                 cedula=form.cedula.data,
                 direccion=form.direccion.data,
                 telefono=form.telefono.data,
-                fotografia=str(file_path)
+                fotografia=public_file_url
             )
             db.session.add(new_client)
             db.session.commit()
@@ -57,7 +61,7 @@ def configure_clients(app):
 
         else:
 
-            return render_template('clientes_registrar.html', title='Registrar cliente', form=form)
+            return render_template('Clients/clientes_registrar.html', title='Registrar cliente', form=form)
 
     @app.route("/clientes/editar/<string:id>", methods=['GET', 'POST'])
     @login_required
@@ -79,31 +83,36 @@ def configure_clients(app):
 
             if form.validate_on_submit():
 
-                # delete the old file:
-                remove(client_to_edit.fotografia)
-
                 # save the new file
-                f = form.fotografia.data
-                filename_extension = path.splitext(
-                    secure_filename(f.filename))[1]
-                file_path = Path(
-                    'SanchoApp',
-                    "static",
-                    'profileImages',
-                    form.nombre.data + "-" + form.cedula.data + filename_extension
-                ).absolute()
+                if form.fotografia.data is not None:
+                    
+                    # delete the old picture
+                    local_file_path = Path(
+                        'SanchoApp', 
+                        client_to_edit.fotografia[1:] # remove the trailing /
+                        ).absolute()
+                    remove(local_file_path)
+
+                    # save the new one
+                    f = form.fotografia.data
+                    filename_extension = path.splitext(secure_filename(f.filename))[1]
+                    file_static_path = 'profileImages/'+form.nombre.data + "-" + form.cedula.data + filename_extension
+                    local_file_path = Path('SanchoApp', "static", file_static_path)
+                    f.save(local_file_path)
+                    public_file_url = url_for("static", filename=file_static_path)
+                    client_to_edit.fotografia = public_file_url
 
                 # update the db data
                 client_to_edit.nombre = form.nombre.data
                 client_to_edit.cedula = form.cedula.data
                 client_to_edit.direccion = form.direccion.data
                 client_to_edit.telefono = form.telefono.data
-                client_to_edit.fotografia = str(file_path)
+                
                 db.session.commit()
                 return redirect(url_for('clientes'))
 
             else:
-                return render_template('clientes_registrar.html', title='Editar cliente', form=form)
+                return render_template('Clients/clientes_registrar.html', title='Editar cliente', form=form)
 
     @app.route("/clientes/eliminar/<string:id>",  methods=['GET', 'POST'])
     @login_required
@@ -115,10 +124,21 @@ def configure_clients(app):
         if client_to_delete is None:
             return "404"
         else:
+            
+            # delete the picture file if the user used a diferent image
+            default_user_image_url = url_for('static', filename=DEFAULT_USER_PICTURE_STATIC_PATH )
+            if client_to_delete.fotografia != default_user_image_url:
+                local_file_path = Path(
+                    'SanchoApp', 
+                    client_to_delete.fotografia[1:] # remove the trailing /
+                    ).absolute()
+                remove(local_file_path)
 
-            remove(client_to_delete.fotografia)
             db.session.delete(client_to_delete)
             db.session.commit()
 
             flash(f'Client {client_to_delete} deleted!', 'warning')
             return redirect(url_for('clientes'))
+
+
+    

@@ -9,9 +9,9 @@ from os import path, remove
 from flask import jsonify
 
 
-from SanchoApp.Products.model import RegisterProductForm, UpdateProductForm
+from SanchoApp.Products.view import RegisterProductForm, UpdateProductForm
 from SanchoApp import login_manager, db
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
+from SanchoApp.Products.model import Producto
 from sqlalchemy import asc, desc
 
 def configure_products(app):
@@ -23,7 +23,7 @@ def configure_products(app):
 
         product_record = Producto.query.order_by(
             Producto.categoria).limit(10).all()
-        return render_template('productos.html', title='Productos', lista_de_productos=product_record)
+        return render_template('Products/productos.html', title='Productos', lista_de_productos=product_record)
         
     @app.route("/productos/registrar", methods=['GET', 'POST'])
     @login_required
@@ -49,7 +49,7 @@ def configure_products(app):
 
         else:
 
-            return render_template('productos_registrar.html', title='Registrar producto', form=form)
+            return render_template('Products/productos_registrar.html', title='Registrar producto', form=form)
 
     @app.route("/productos/<string:id>",  methods=['GET', 'POST'])
     @login_required
@@ -88,4 +88,4 @@ def configure_products(app):
 
                 return redirect(url_for('productos'))
             else:
-                return render_template('productos_registrar.html', title='Editar Producto', form=form)
+                return render_template('Products/productos_registrar.html', title='Editar Producto', form=form)

@@ -1,5 +1,5 @@
 from SanchoApp import create_app, db
-from SanchoApp.DatabaseModel import Producto
+from SanchoApp.Products.model import Producto
 from unittest import TestCase, main
 
 class TestEncription(TestCase):

@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1 class="mb-3">Clientes</h1>
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" href="{{url_for('clientes')}}">Mis clientes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{url_for('registrar_clientes')}}">Registrar</a>
+    </li>
+</ul>
+<div class="content-section border-top-0 pt-3">
+    {% for cliente in lista_de_clientes %}
+    <article class="media content-section ">
+        <a class="mt-auto mb-auto mr-4 " href="{{ cliente.fotografia }}">
+            <img alt="{{cliente.nombre}}" src="{{ cliente.fotografia }}" width="150">
+        </a>
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="clientes/eliminar/{{cliente.id}}"> Eliminar cliente</a>
+                <small class="text-muted">{{ cliente.id }}</small>
+            </div>
+            <h2>
+                <a class="article-title" href="clientes/editar/{{cliente.id}}">
+                    {{ cliente.nombre }}
+                </a>
+            </h2>
+            <h4 class="article-title">{{ cliente.cedula }}</h2>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+
+{% endblock content %}

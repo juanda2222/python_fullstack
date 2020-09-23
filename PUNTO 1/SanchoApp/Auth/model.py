@@ -1,42 +1,25 @@
 
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
-    DecimalField, IntegerField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
-from flask_wtf.file import FileField, FileRequired
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
-
-from wtforms.fields.html5 import DateField
-
-"""
-    START Authentication wise forms:
-"""
-
-class RegistrationForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Sign Up')
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user is not None:
-            raise ValidationError('Please use a different username.')
-
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is not None:
-            raise ValidationError('Please use a different email address.')
 
 
-class LoginForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
-    submit = SubmitField('Login')
+from datetime import datetime
+from flask_login import UserMixin  # used to manage the login state inside the db
+from sqlalchemy.orm import relationship
+from SanchoApp import db
+
+
+
+class User(UserMixin, db.Model):
+
+    __tablename__="usuarios"
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    image_file = db.Column(db.String(20), nullable=False,
+                           default='default.jpg')
+    
+
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"

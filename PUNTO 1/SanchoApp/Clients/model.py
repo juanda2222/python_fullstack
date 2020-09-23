@@ -1,36 +1,25 @@
 
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
-    DecimalField, IntegerField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
-from flask_wtf.file import FileField, FileRequired
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
-
-from wtforms.fields.html5 import DateField
+from datetime import datetime
+from flask_login import UserMixin  # used to manage the login state inside the db
+from sqlalchemy.orm import relationship
+from SanchoApp import db
 
 
-class CreateClientForm(FlaskForm):
+class Cliente(db.Model):
 
-    nombre = StringField('Nombre del cliente', validators=[DataRequired()])
-    cedula = StringField('Cedula', validators=[DataRequired()])
-    direccion = StringField('Dirección')
-    telefono = StringField('Telefono')
-    fotografia = FileField("Subir foto", validators=[FileRequired()])
+    __tablename__="clientes"
 
-    submit = SubmitField('Crear usuario')
+    # one to many relation describer
+    relacion_facturas = relationship("Factura", back_populates="relacion_cliente")
 
-    def validate_cedula(self, cedula):
-        client = Cliente.query.filter_by(cedula=cedula.data).first()
-        if client is not None:
-            raise ValidationError('This client already exists.')
+    id = db.Column(db.Integer, primary_key=True)
+    cedula = db.Column(db.String(100), nullable=False)
+    nombre = db.Column(db.String(100), nullable=False)
+    direccion = db.Column(db.String(100), nullable=True)
+    telefono = db.Column(db.String(12), nullable=True)
+    fotografia = db.Column(db.String(256), nullable=True)
 
-class UpdateClientForm(FlaskForm):
-
-    nombre = StringField('Nombre del cliente', validators=[DataRequired()])
-    cedula = StringField('Cedula', validators=[DataRequired()])
-    direccion = StringField('Dirección')
-    telefono = StringField('Telefono')
-    fotografia = FileField("Subir foto", validators=[FileRequired()])
-
-    submit = SubmitField('Actulizar usuario')
+    def __repr__(self):
+        return f"Client('{self.nombre}', cedula: '{self.cedula}')"
+        

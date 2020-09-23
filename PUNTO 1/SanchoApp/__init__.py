@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required
+login_required
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
@@ -8,7 +9,6 @@ db = SQLAlchemy()
 # init the login_manager to use it later
 login_manager = LoginManager()
 
-from SanchoApp import DatabaseModel
 from SanchoApp.Auth import configure_auth
 from SanchoApp.Clients import configure_clients
 from SanchoApp.Facturas import configure_facturas

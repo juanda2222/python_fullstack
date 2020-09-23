@@ -9,9 +9,11 @@ from os import path, remove
 from flask import jsonify
 
 
-from SanchoApp.Facturas.model import CreateFacturaForm, UpdateFacturaForm
+from SanchoApp.Facturas.view import CreateFacturaForm, UpdateFacturaForm
 from SanchoApp import login_manager, db
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
+from SanchoApp.Facturas.model import Factura
+from SanchoApp.Products.model import Producto
+from SanchoApp.Clients.model import Cliente
 from sqlalchemy import asc, desc
 
 def configure_facturas(app):
@@ -23,7 +25,7 @@ def configure_facturas(app):
         facturas_records = Factura.query.order_by(
             Factura.valor_total).limit(10).all()
 
-        return render_template('facturas.html', title='Facturas', lista_de_facturas=facturas_records)
+        return render_template('Facturas/facturas.html', title='Facturas', lista_de_facturas=facturas_records)
 
     @app.route("/facturas/registrar", methods=['GET', 'POST'])
     @login_required
@@ -35,6 +37,7 @@ def configure_facturas(app):
         # generate a list of products to display
         def map_id__name_id(producto):
             return (str(producto.id), producto.nombre + "-" + producto.codigo)
+
         id__name_map = map(map_id__name_id, productos)
         form.productos.choices = list(id__name_map)
 
@@ -62,11 +65,11 @@ def configure_facturas(app):
             db.session.commit()
             flash(f'New Order created! {new_factura}!', 'success')
 
-            return redirect(url_for('facturas'))
+            return redirect(url_for('Facturas/facturas'))
 
         else:
 
-            return render_template('facturas_registrar.html', title='Facturas', form=form)
+            return render_template('Facturas/facturas_registrar.html', title='Facturas', form=form)
 
     @app.route("/facturas/editar/<string:id>", methods=['GET', 'POST'])
     @login_required
@@ -126,7 +129,7 @@ def configure_facturas(app):
                 return redirect(url_for('facturas'))
 
             else:
-                return render_template('facturas_registrar.html', title='Clientes', form=form)
+                return render_template('Facturas/facturas_registrar.html', title='Clientes', form=form)
 
 
     @app.route("/facturas/api/<string:codigo>", methods=['GET'])

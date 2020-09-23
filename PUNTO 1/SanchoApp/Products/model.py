@@ -1,38 +1,28 @@
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
-    DecimalField, IntegerField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
-from flask_wtf.file import FileField, FileRequired
-from SanchoApp.DatabaseModel import User, Producto, Cliente, Factura
+from datetime import datetime
+from flask_login import UserMixin  # used to manage the login state inside the db
+from sqlalchemy.orm import relationship
+from SanchoApp import db
 
-from wtforms.fields.html5 import DateField
+from SanchoApp.Facturas.model import relacion_productos_facturas
 
-class RegisterProductForm(FlaskForm):
+class Producto(db.Model):
 
-    nombre = StringField('Nombre del producto', validators=[DataRequired()])
-    categoria = StringField('Categoria')
-    codigo = StringField('Codigo del producto', validators=[DataRequired()])
-    precio = DecimalField('Precio en COP', validators=[DataRequired()])
-    cantidad = IntegerField('Cantidad', validators=[DataRequired()], default=1)
-    bodega = StringField('Almacenado en Bodega', default="")
-    estado_activo = BooleanField('Estado activo', default=True)
+    __tablename__="productos"
 
-    submit = SubmitField('Crear')
+    # many to many relationship
+    relacion_facturas = relationship("Factura",
+                            secondary=relacion_productos_facturas,
+                            back_populates="relacion_productos")
 
-    def validate_codigo(self, codigo):
-        client = Producto.query.filter_by(codigo=codigo.data).first()
-        if client is not None:
-            raise ValidationError('This code already exists.')
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    codigo = db.Column(db.String(100), nullable=False, unique=True)
+    precio = db.Column(db.String(10), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False, default=1)
+    categoria = db.Column(db.String(100), nullable=True)
+    bodega = db.Column(db.String(100), nullable=True)
+    estado_activo = db.Column(db.Boolean(), nullable=False, default=True)
 
-class UpdateProductForm(FlaskForm):
-
-    nombre = StringField('Nombre del producto', validators=[DataRequired()])
-    codigo = StringField('Codigo del producto', validators=[DataRequired()])
-    precio = DecimalField('Precio en COP', validators=[DataRequired()])
-    cantidad = IntegerField('Cantidad', default=1)
-    categoria = StringField('Categoria', default="")
-    bodega = StringField('Almacenado en Bodega', default="")
-    estado_activo = BooleanField('Estado activo', default=True)
-
-    submit = SubmitField('Modificar')
+    def __repr__(self):
+        return f"Produto('{self.id}', '{self.nombre}', '{self.codigo}', '{self.precio}')"
