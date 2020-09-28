@@ -23,3 +23,16 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+
+def create_new_user(**kargs) -> type(User):
+    new_user = User(
+        username=kargs["username"],
+        password=kargs["password"],
+        email= kargs["email"] if "email" in kargs else None,
+        image_file=kargs["image_file"] if "image_file" in kargs else None
+    )
+    db.session.add(new_user)
+    db.session.commit()
+
+    return new_user

@@ -43,7 +43,6 @@ def configure_clients(app):
                 local_file_path = Path('SanchoApp', "static", file_static_path)
                 f.save(local_file_path)
                 public_file_url = url_for("static", filename=file_static_path)
-            print(public_file_url)
 
             # save client in the database
             new_client = Cliente(

@@ -11,9 +11,8 @@ from flask import jsonify
 
 from SanchoApp.Auth.view import RegistrationForm, LoginForm
 from SanchoApp import login_manager, db
-from SanchoApp.Auth.model import User
+from SanchoApp.Auth.model import User, create_new_user
 from sqlalchemy import asc, desc
-
 
 def configure_auth(app):
 
@@ -68,13 +67,14 @@ def configure_auth(app):
 
         form = RegistrationForm()
         if form.validate_on_submit():
-            new_user = User(
+            
+            # create user
+            new_user = create_new_user(
                 username=form.username.data,
                 email=form.email.data,
                 password=form.password.data,
             )
-            db.session.add(new_user)
-            db.session.commit()
+
             # authenticate to the login manager
             login_user(new_user, remember=True)
             flash(f'Account created for {form.username.data}!', 'success')

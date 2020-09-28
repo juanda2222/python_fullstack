@@ -1,4 +1,8 @@
 
+from shutil import copyfile
+from random import randint
+from pathlib import Path
+
 from SanchoApp import create_app, db
 from SanchoApp.Auth.model import User
 from SanchoApp.Products.model import Producto
@@ -56,6 +60,16 @@ def create_dummy_clients(db):
     ]
 
     for nuevo_cliente in lista_de_clientes:
+
+        # create the picture files
+        if "fotografia" in nuevo_cliente:
+            images_files = ["user1.png", "user2.png", "user3.png"]
+            copyfile(
+                Path("SanchoApp", "static", images_files[randint(0, 2)]) , 
+                "SanchoApp" / Path(nuevo_cliente["fotografia"])
+            )
+
+        # create db record
         nuevo_database_client = Cliente(
             nombre=nuevo_cliente["nombre"],
             cedula=nuevo_cliente["cedula"],

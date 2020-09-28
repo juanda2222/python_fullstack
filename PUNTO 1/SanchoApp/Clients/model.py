@@ -23,3 +23,6 @@ class Cliente(db.Model):
     def __repr__(self):
         return f"Client('{self.nombre}', cedula: '{self.cedula}' fotografia_url: {self.fotografia} )"
         
+
+def create_new_client(**kargs):
+    pass
