@@ -65,7 +65,7 @@ def configure_facturas(app):
             db.session.commit()
             flash(f'New Order created! {new_factura}!', 'success')
 
-            return redirect(url_for('Facturas/facturas'))
+            return redirect(url_for('facturas'))
 
         else:
 

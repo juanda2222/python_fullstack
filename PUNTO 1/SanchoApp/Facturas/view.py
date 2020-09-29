@@ -3,7 +3,9 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
     DecimalField, IntegerField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo,  ValidationError
 from flask_wtf.file import FileField, FileRequired
+
 from SanchoApp.Facturas.model import Factura
+from SanchoApp.Clients.model import Cliente
 
 from wtforms.fields.html5 import DateField
 

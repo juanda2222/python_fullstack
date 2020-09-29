@@ -85,11 +85,16 @@ def configure_clients(app):
                 # save the new file
                 if form.fotografia.data is not None:
                     
+                    print(client_to_edit.fotografia)
+
                     # delete the old picture
                     local_file_path = Path(
                         'SanchoApp', 
-                        client_to_edit.fotografia
+                        client_to_edit.fotografia[1:]
                         ).absolute()
+
+                    print(local_file_path)
+                    
                     remove(local_file_path)
 
                     # save the new one
